@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Localization;
-
 /*
  * This file is part of the Carbon package.
  *
@@ -10,6 +8,8 @@ namespace Tests\Localization;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+namespace Tests\Localization;
 
 use Carbon\Carbon;
 use Tests\AbstractTestCase;
@@ -69,13 +69,13 @@ class FaTest extends AbstractTestCase
 
             $d = Carbon::now()->addSecond();
             $d2 = Carbon::now();
-            $scope->assertSame('1 ثانیه پیش از', $d->diffForHumans($d2));
-            $scope->assertSame('1 ثانیه پس از', $d2->diffForHumans($d));
+            $scope->assertSame('1 ثانیه پس از', $d->diffForHumans($d2));
+            $scope->assertSame('1 ثانیه پیش از', $d2->diffForHumans($d));
 
             $d = Carbon::now()->addSecond();
             $d2 = Carbon::now();
-            $scope->assertSame('1 ثانیه پیش از', $d->diffForHumans($d2));
-            $scope->assertSame('1 ثانیه پس از', $d2->diffForHumans($d));
+            $scope->assertSame('1 ثانیه پس از', $d->diffForHumans($d2));
+            $scope->assertSame('1 ثانیه پیش از', $d2->diffForHumans($d));
 
             $scope->assertSame('1 ثانیه', $d->diffForHumans($d2, true));
             $scope->assertSame('2 ثانیه', $d2->diffForHumans($d->addSecond(), true));

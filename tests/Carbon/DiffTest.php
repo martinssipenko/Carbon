@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Carbon;
-
 /*
  * This file is part of the Carbon package.
  *
@@ -10,6 +8,8 @@ namespace Tests\Carbon;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+namespace Tests\Carbon;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -20,7 +20,7 @@ class DiffTest extends AbstractTestCase
 {
     protected function wrapWithTestNow(Closure $func, Carbon $dt = null)
     {
-        parent::wrapWithTestNow($func, ($dt === null) ? Carbon::createFromDate(2012, 1, 1) : $dt);
+        parent::wrapWithTestNow($func, $dt ?: Carbon::createFromDate(2012, 1, 1));
     }
 
     public function testDiffInYearsPositive()

@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Carbon;
-
 /*
  * This file is part of the Carbon package.
  *
@@ -11,7 +9,10 @@ namespace Tests\Carbon;
  * file that was distributed with this source code.
  */
 
+namespace Tests\Carbon;
+
 use Carbon\Carbon;
+use DateTimeZone;
 use InvalidArgumentException;
 use Tests\AbstractTestCase;
 
@@ -100,10 +101,10 @@ class SettersTest extends AbstractTestCase
     {
         $d = Carbon::now();
         $d->setTime(2, 2, 2)->setTime(1, 1, 1);
-        $this->assertInstanceOf('Carbon\Carbon', $d);
+        $this->assertInstanceOfCarbon($d);
         $this->assertSame(1, $d->second);
         $d->setTime(2, 2, 2)->setTime(1, 1);
-        $this->assertInstanceOf('Carbon\Carbon', $d);
+        $this->assertInstanceOfCarbon($d);
         $this->assertSame(0, $d->second);
     }
 
@@ -132,10 +133,21 @@ class SettersTest extends AbstractTestCase
     {
         $d = Carbon::now();
         $d->setDateTime(2013, 9, 24, 17, 4, 29);
-        $this->assertInstanceOf('Carbon\Carbon', $d);
+        $this->assertInstanceOfCarbon($d);
         $d->setDateTime(2014, 10, 25, 18, 5, 30);
-        $this->assertInstanceOf('Carbon\Carbon', $d);
+        $this->assertInstanceOfCarbon($d);
         $this->assertCarbon($d, 2014, 10, 25, 18, 5, 30);
+    }
+
+    /**
+     * @link https://github.com/briannesbitt/Carbon/issues/539
+     */
+    public function testSetDateAfterStringCreation()
+    {
+        $d = new Carbon('first day of this month');
+        $this->assertSame(1, $d->day);
+        $d->setDate($d->year, $d->month, 12);
+        $this->assertSame(12, $d->day);
     }
 
     public function testSecondSetterWithWrap()
@@ -181,6 +193,7 @@ class SettersTest extends AbstractTestCase
             //
         }
     }
+
     public function testTzWithInvalidTimezone()
     {
         $d = Carbon::now();
@@ -199,6 +212,7 @@ class SettersTest extends AbstractTestCase
             //
         }
     }
+
     public function testSetTimezoneUsingString()
     {
         $d = Carbon::now();
@@ -229,27 +243,27 @@ class SettersTest extends AbstractTestCase
     public function testSetTimezoneUsingDateTimeZone()
     {
         $d = Carbon::now();
-        $d->setTimezone(new \DateTimeZone('America/Toronto'));
+        $d->setTimezone(new DateTimeZone('America/Toronto'));
         $this->assertSame('America/Toronto', $d->tzName);
     }
 
     public function testTimezoneUsingDateTimeZone()
     {
         $d = Carbon::now();
-        $d->timezone = new \DateTimeZone('America/Toronto');
+        $d->timezone = new DateTimeZone('America/Toronto');
         $this->assertSame('America/Toronto', $d->tzName);
 
-        $d->timezone(new \DateTimeZone('America/Vancouver'));
+        $d->timezone(new DateTimeZone('America/Vancouver'));
         $this->assertSame('America/Vancouver', $d->tzName);
     }
 
     public function testTzUsingDateTimeZone()
     {
         $d = Carbon::now();
-        $d->tz = new \DateTimeZone('America/Toronto');
+        $d->tz = new DateTimeZone('America/Toronto');
         $this->assertSame('America/Toronto', $d->tzName);
 
-        $d->tz(new \DateTimeZone('America/Vancouver'));
+        $d->tz(new DateTimeZone('America/Vancouver'));
         $this->assertSame('America/Vancouver', $d->tzName);
     }
 
@@ -262,14 +276,28 @@ class SettersTest extends AbstractTestCase
         $d->doesNotExit = 'bb';
     }
 
-    public function testSetTimeFromTimeString()
+    /**
+     * @dataProvider \Tests\Carbon\SettersTest::dataProviderTestSetTimeFromTimeString
+     *
+     * @param int    $hour
+     * @param int    $minute
+     * @param int    $second
+     * @param string $time
+     */
+    public function testSetTimeFromTimeString($hour, $minute, $second, $time)
     {
-        $d = Carbon::now();
+        Carbon::setTestNow(Carbon::create(2016, 2, 12, 1, 2, 3));
+        $d = Carbon::now()->setTimeFromTimeString($time);
+        $this->assertCarbon($d, 2016, 2, 12, $hour, $minute, $second);
+        Carbon::setTestNow();
+    }
 
-        $d->setTimeFromTimeString('09:15:30');
-
-        $this->assertSame(9, $d->hour);
-        $this->assertSame(15, $d->minute);
-        $this->assertSame(30, $d->second);
+    public function dataProviderTestSetTimeFromTimeString()
+    {
+        return array(
+            array(9, 15, 30, '09:15:30'),
+            array(9, 15, 0, '09:15'),
+            array(9, 0, 0, '09'),
+        );
     }
 }

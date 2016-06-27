@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Carbon;
-
 /*
  * This file is part of the Carbon package.
  *
@@ -10,6 +8,8 @@ namespace Tests\Carbon;
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
+namespace Tests\Carbon;
 
 use Carbon\Carbon;
 use Symfony\Component\Translation\Translator;
@@ -56,9 +56,11 @@ class LocalizationTest extends AbstractTestCase
             array('he'),
             array('hr'),
             array('hu'),
+            array('hy'),
             array('id'),
             array('it'),
             array('ja'),
+            array('ka'),
             array('ko'),
             array('lt'),
             array('lv'),
@@ -68,7 +70,6 @@ class LocalizationTest extends AbstractTestCase
             array('pl'),
             array('pt'),
             array('pt_BR'),
-            array('pt-BR'),
             array('ro'),
             array('ru'),
             array('sk'),
@@ -82,7 +83,7 @@ class LocalizationTest extends AbstractTestCase
             array('uz'),
             array('vi'),
             array('zh'),
-            array('zh-TW'),
+            array('zh_TW'),
         );
     }
 
@@ -116,6 +117,40 @@ class LocalizationTest extends AbstractTestCase
     public function testSetLocaleWithKnownLocale()
     {
         $this->assertTrue(Carbon::setLocale('fr'));
+    }
+
+    /**
+     * @see \Tests\Carbon\LocalizationTest::testSetLocaleWithMalformedLocale
+     *
+     * @return array
+     */
+    public function dataProviderTestSetLocaleWithMalformedLocale()
+    {
+        return array(
+            array('DE'),
+            array('pt-BR'),
+            array('pt-br'),
+            array('PT-br'),
+            array('PT-BR'),
+            array('pt_br'),
+            array('PT_br'),
+            array('PT_BR'),
+        );
+    }
+
+    /**
+     * @dataProvider \Tests\Carbon\LocalizationTest::dataProviderTestSetLocaleWithMalformedLocale
+     *
+     * @param string $malformedLocale
+     */
+    public function testSetLocaleWithMalformedLocale($malformedLocale)
+    {
+        $this->assertTrue(Carbon::setLocale($malformedLocale));
+    }
+
+    public function testSetLocaleWithNonExistingLocale()
+    {
+        $this->assertFalse(Carbon::setLocale('pt-XX'));
     }
 
     public function testSetLocaleWithUnknownLocale()

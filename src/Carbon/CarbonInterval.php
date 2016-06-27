@@ -19,7 +19,7 @@ use Symfony\Component\Translation\Loader\ArrayLoader;
 
 /**
  * A simple API extension for DateInterval.
- * The implemenation provides helpers to handle weeks but only days are saved.
+ * The implementation provides helpers to handle weeks but only days are saved.
  * Weeks are calculated based on the total days of the current instance.
  *
  * @property int $years Total years of the current interval.
@@ -80,7 +80,7 @@ class CarbonInterval extends DateInterval
     /**
      * A translator to ... er ... translate stuff
      *
-     * @var TranslatorInterface
+     * @var \Symfony\Component\Translation\TranslatorInterface
      */
     protected static $translator;
 
@@ -220,14 +220,14 @@ class CarbonInterval extends DateInterval
      *
      * @param DateInterval $di
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      *
      * @return static
      */
     public static function instance(DateInterval $di)
     {
         if (static::wasCreatedFromDiff($di)) {
-            throw new InvalidArgumentException("Can not instance a DateInterval object created from DateTime::diff().");
+            throw new InvalidArgumentException('Can not instance a DateInterval object created from DateTime::diff().');
         }
 
         $instance = new static($di->y, $di->m, 0, $di->d, $di->h, $di->i, $di->s);
@@ -242,9 +242,9 @@ class CarbonInterval extends DateInterval
     ///////////////////////////////////////////////////////////////////
 
     /**
-     * Intialize the translator instance if necessary.
+     * Initialize the translator instance if necessary.
      *
-     * @return TranslatorInterface
+     * @return \Symfony\Component\Translation\TranslatorInterface
      */
     protected static function translator()
     {
@@ -260,7 +260,7 @@ class CarbonInterval extends DateInterval
     /**
      * Get the translator instance in use
      *
-     * @return TranslatorInterface
+     * @return \Symfony\Component\Translation\TranslatorInterface
      */
     public static function getTranslator()
     {
@@ -309,7 +309,7 @@ class CarbonInterval extends DateInterval
      *
      * @param string $name
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      *
      * @return int
      */
@@ -352,7 +352,7 @@ class CarbonInterval extends DateInterval
      * @param string $name
      * @param int    $val
      *
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function __set($name, $val)
     {
@@ -507,14 +507,14 @@ class CarbonInterval extends DateInterval
         $sign = $interval->invert === 1 ? -1 : 1;
 
         if (static::wasCreatedFromDiff($interval)) {
-            $this->dayz = $this->dayz + $interval->days * $sign;
+            $this->dayz += $interval->days * $sign;
         } else {
-            $this->years = $this->years + $interval->y * $sign;
-            $this->months = $this->months + $interval->m * $sign;
-            $this->dayz = $this->dayz + $interval->d * $sign;
-            $this->hours = $this->hours + $interval->h * $sign;
-            $this->minutes = $this->minutes + $interval->i * $sign;
-            $this->seconds = $this->seconds + $interval->s * $sign;
+            $this->years += $interval->y * $sign;
+            $this->months += $interval->m * $sign;
+            $this->dayz += $interval->d * $sign;
+            $this->hours += $interval->h * $sign;
+            $this->minutes += $interval->i * $sign;
+            $this->seconds += $interval->s * $sign;
         }
 
         return $this;

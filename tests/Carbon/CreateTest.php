@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Carbon;
-
 /*
  * This file is part of the Carbon package.
  *
@@ -11,7 +9,10 @@ namespace Tests\Carbon;
  * file that was distributed with this source code.
  */
 
+namespace Tests\Carbon;
+
 use Carbon\Carbon;
+use DateTimeZone;
 use Tests\AbstractTestCase;
 
 class CreateTest extends AbstractTestCase
@@ -19,7 +20,7 @@ class CreateTest extends AbstractTestCase
     public function testCreateReturnsDatingInstance()
     {
         $d = Carbon::create();
-        $this->assertTrue($d instanceof Carbon);
+        $this->assertInstanceOfCarbon($d);
     }
 
     public function testCreateWithDefaults()
@@ -34,12 +35,22 @@ class CreateTest extends AbstractTestCase
         $this->assertSame(2012, $d->year);
     }
 
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testCreateWithInvalidYear()
+    public function testCreateHandlesNegativeYear()
     {
-        Carbon::create(-3);
+        $c = Carbon::create(-1, 10, 12, 1, 2, 3);
+        $this->assertCarbon($c, -1, 10, 12, 1, 2, 3);
+    }
+
+    public function testCreateHandlesFiveDigitsPositiveYears()
+    {
+        $c = Carbon::create(999999999, 10, 12, 1, 2, 3);
+        $this->assertCarbon($c, 999999999, 10, 12, 1, 2, 3);
+    }
+
+    public function testCreateHandlesFiveDigitsNegativeYears()
+    {
+        $c = Carbon::create(-999999999, 10, 12, 1, 2, 3);
+        $this->assertCarbon($c, -999999999, 10, 12, 1, 2, 3);
     }
 
     public function testCreateWithMonth()
@@ -146,7 +157,7 @@ class CreateTest extends AbstractTestCase
 
     public function testCreateWithDateTimeZone()
     {
-        $d = Carbon::create(2012, 1, 1, 0, 0, 0, new \DateTimeZone('Europe/London'));
+        $d = Carbon::create(2012, 1, 1, 0, 0, 0, new DateTimeZone('Europe/London'));
         $this->assertCarbon($d, 2012, 1, 1, 0, 0, 0);
         $this->assertSame('Europe/London', $d->tzName);
     }
@@ -163,7 +174,7 @@ class CreateTest extends AbstractTestCase
      */
     public function testCreateWithInvalidTimezoneOffset()
     {
-        $dt = Carbon::createFromDate(2000, 1, 1, -28236);
+        Carbon::createFromDate(2000, 1, 1, -28236);
     }
 
     public function testCreateWithValidTimezoneOffset()

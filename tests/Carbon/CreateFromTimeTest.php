@@ -1,7 +1,5 @@
 <?php
 
-namespace Tests\Carbon;
-
 /*
  * This file is part of the Carbon package.
  *
@@ -11,7 +9,10 @@ namespace Tests\Carbon;
  * file that was distributed with this source code.
  */
 
+namespace Tests\Carbon;
+
 use Carbon\Carbon;
+use DateTimeZone;
 use Tests\AbstractTestCase;
 
 class CreateFromTimeTest extends AbstractTestCase
@@ -50,7 +51,7 @@ class CreateFromTimeTest extends AbstractTestCase
 
     public function testCreateFromTimeWithDateTimeZone()
     {
-        $d = Carbon::createFromTime(12, 0, 0, new \DateTimeZone('Europe/London'));
+        $d = Carbon::createFromTime(12, 0, 0, new DateTimeZone('Europe/London'));
         $this->assertCarbon($d, Carbon::now()->year, Carbon::now()->month, Carbon::now()->day, 12, 0, 0);
         $this->assertSame('Europe/London', $d->tzName);
     }
